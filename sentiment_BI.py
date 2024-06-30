@@ -176,105 +176,111 @@ def main():
         if upl:
             df = pd.read_excel(upl)
 
-            def analyze_and_label_sentiment(text):
-                cleaned_input, prediction = analyze_sentiment(text)
+            if 'Comment' not in df.columns:
+                st.markdown("")
+                st.markdown("")
+                st.markdown("")
+                st.markdown("### Maaf Tidak Ditemukan Kolom Bernama 'Comment' di file tersebut. Harap Coba Lagi! 🙏😊")
+            else:
+                def analyze_and_label_sentiment(text):
+                    cleaned_input, prediction = analyze_sentiment(text)
 
-                if prediction == 1:
-                    return "Positif 😃"
-                elif prediction == 0:
-                    return "Negatif 😠"
+                    if prediction == 1:
+                        return "Positif 😃"
+                    elif prediction == 0:
+                        return "Negatif 😠"
 
-            df['analysis'] = df['Comment'].apply(analyze_and_label_sentiment)
-            
-            st.markdown("")
-            st.markdown("")
-            st.markdown("")
-            st.write(df.head(10))
-        
-            def convert_df_excel(df):
-                # Create a file-like object in memory
-                excel_buffer = io.BytesIO()
-                # Save the DataFrame to the file-like object
-                df.to_excel(excel_buffer, index=False)
-                # Get the bytes from the file-like object
-                excel_data = excel_buffer.getvalue()
-                return excel_data
-
-            excel_data = convert_df_excel(df)
-
-            def convert_df_csv(df):
-                # Create a file-like object in memory
-                csv_buffer = io.BytesIO()
-                # Save the DataFrame to the file-like object
-                df.to_csv(csv_buffer, index=False)
-                # Get the bytes from the file-like object
-                csv_data = csv_buffer.getvalue()
-                return csv_data  # Define and return the csv_data variable here
-
-            csv_data = convert_df_csv(df)  # Assign the csv data to the csv_data variable
-
-            col1_width = 200
-            col2_width = 800
-
-            col1, col2 = st.columns([col1_width, col2_width])
-            with col1:
-                st.download_button(
-                    label="Download data as Excel",
-                    data=excel_data,
-                    file_name='sentiment.xlsx',
-                    mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                )
-            with col2:
-                st.download_button(
-                    label="Download data as CSV",
-                    data=csv_data,
-                    file_name='sentiment.csv',
-                    mime='text/csv',  # Correct MIME type for CSV
-                )
-            
-            st.markdown("")
-            st.markdown("")
-            st.markdown("")
-            
-            st.info("### Word Cloud Visualization")
-            # Load stopwords from a text file
-            with open('data/stopwordsID.txt', 'r', encoding='utf-8') as stopwords_file:
-                stopwords_set = set(stopwords_file.read().splitlines())
-
-            # Combine all text from the 'Comment' column for word cloud
-            text = ' '.join(df['Comment'].astype(str))
-            create_word_cloud(text, stopwords_set)
-            
-            st.markdown("")
-            st.markdown("")
-            st.markdown("")
-    
-            col1_width = 300
-            col2_width = 700
-
-            col1, col2 = st.columns([col1_width, col2_width])
-            with col1:
-                st.info("### Proses Analisis Sentimen")
-                # Hitung jumlah masing-masing sentimen
-                sentiment_counts = df['analysis'].value_counts()
-                total_sentiments = len(df)
-    
-                st.write("Hasil Sentiment:")
-                for sentiment, count in sentiment_counts.items():
-                    st.write(f"{sentiment}: {count}")
-                    st.write(f"Total: {total_sentiments}")
-            with col2:
-                st.info("### Visualisasi Sentimen")
-                st.write("Distribusi Sentimen:")
+                df['analysis'] = df['Comment'].apply(analyze_and_label_sentiment)
                 
-                # Create a pie chart using plotly
-                fig = px.pie(sentiment_counts, names=sentiment_counts.index, values=sentiment_counts.values)
-        
-                # Customize the pie chart
-                fig.update_traces(textposition='inside', textinfo='percent+label')
+                st.markdown("")
+                st.markdown("")
+                st.markdown("")
+                st.write(df.head(10))
+            
+                def convert_df_excel(df):
+                    # Create a file-like object in memory
+                    excel_buffer = io.BytesIO()
+                    # Save the DataFrame to the file-like object
+                    df.to_excel(excel_buffer, index=False)
+                    # Get the bytes from the file-like object
+                    excel_data = excel_buffer.getvalue()
+                    return excel_data
 
-                # Display the pie chart
-                st.plotly_chart(fig)
+                excel_data = convert_df_excel(df)
+
+                def convert_df_csv(df):
+                    # Create a file-like object in memory
+                    csv_buffer = io.BytesIO()
+                    # Save the DataFrame to the file-like object
+                    df.to_csv(csv_buffer, index=False)
+                    # Get the bytes from the file-like object
+                    csv_data = csv_buffer.getvalue()
+                    return csv_data
+
+                csv_data = convert_df_csv(df)
+
+                col1_width = 200
+                col2_width = 800
+
+                col1, col2 = st.columns([col1_width, col2_width])
+                with col1:
+                    st.download_button(
+                        label="Download data as Excel",
+                        data=excel_data,
+                        file_name='sentiment.xlsx',
+                        mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    )
+                with col2:
+                    st.download_button(
+                        label="Download data as CSV",
+                        data=csv_data,
+                        file_name='sentiment.csv',
+                        mime='text/csv',
+                    )
+                
+                st.markdown("")
+                st.markdown("")
+                st.markdown("")
+                
+                st.info("### Word Cloud Visualization")
+                # Load stopwords from a text file
+                with open('data/stopwordsID.txt', 'r', encoding='utf-8') as stopwords_file:
+                    stopwords_set = set(stopwords_file.read().splitlines())
+
+                # Combine all text from the 'Comment' column for word cloud
+                text = ' '.join(df['Comment'].astype(str))
+                create_word_cloud(text, stopwords_set)
+                
+                st.markdown("")
+                st.markdown("")
+                st.markdown("")
+        
+                col1_width = 300
+                col2_width = 700
+
+                col1, col2 = st.columns([col1_width, col2_width])
+                with col1:
+                    st.info("### Proses Analisis Sentimen")
+                    # Hitung jumlah masing-masing sentimen
+                    sentiment_counts = df['analysis'].value_counts()
+                    total_sentiments = len(df)
+        
+                    st.write("Hasil Sentiment:")
+                    for sentiment, count in sentiment_counts.items():
+                        st.write(f"{sentiment}: {count}")
+                        st.write(f"Total: {total_sentiments}")
+                with col2:
+                    st.info("### Visualisasi Sentimen")
+                    st.write("Distribusi Sentimen:")
+                    
+                    # Create a pie chart using plotly
+                    fig = px.pie(sentiment_counts, names=sentiment_counts.index, values=sentiment_counts.values)
+            
+                    # Customize the pie chart
+                    fig.update_traces(textposition='inside', textinfo='percent+label')
+
+                    # Display the pie chart
+                    st.plotly_chart(fig)
 
 if __name__ == '__main__':
     main()
