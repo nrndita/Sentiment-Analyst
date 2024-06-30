@@ -1,0 +1,10 @@
+# requirements.txt
+git+https://github.com/tanglespace/hydralit.git@main 
+
+streamlit
+pandas
+scikit-learn
+nltk
+plotly
+streamlit-extras
+wordcloud
