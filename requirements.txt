@@ -8,3 +8,4 @@ nltk
 plotly
 streamlit-extras
 wordcloud
+openpyxl
