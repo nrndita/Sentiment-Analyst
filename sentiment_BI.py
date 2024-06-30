@@ -181,6 +181,8 @@ def main():
                 st.markdown("")
                 st.markdown("")
                 st.markdown("### Maaf Tidak Ditemukan Kolom Bernama 'Comment' di file tersebut. Harap Coba Lagi! 🙏😊")
+                st.markdown("Berikut adalah contoh yang benar: ")
+                st.image('img/contoh.png', use_column_width=True)
             else:
                 def analyze_and_label_sentiment(text):
                     cleaned_input, prediction = analyze_sentiment(text)
